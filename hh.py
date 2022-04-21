@@ -1,15 +1,14 @@
-from datetime import datetime as dt
-
+import datetime as dt
+from time import sleep
 
 from decouple import config
 from selenium import webdriver
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 import constants as const
 import utils
-
-from selenium.webdriver.common.by import By
 
 
 PHONE = config('PHONE', default='')
@@ -17,7 +16,7 @@ PASSWORD = config('PASSWORD', default='')
 RESUME_URL = config('RESUME_URL', default='')
 
 
-def main(browser):
+def refresh_resume(browser):
     # Вход на строницу логина
     utils.get_page(browser, const.HH_LOGIN_URL)
 
@@ -40,18 +39,32 @@ def main(browser):
     utils.click_button(browser, const.REFRESH_BUTTON_XPATH)
 
     browser.save_screenshot(
-        f'/Screenshots/resume_{dt.now().strftime(const.DT_FORMAT)}.png'
+        '/Screenshots/resume_'
+        f'{dt.datetime.now().strftime(const.DT_FORMAT)}.png'
     )
 
     browser.close()
 
 
 if __name__ == '__main__':
-    service = Service(executable_path=ChromeDriverManager().install())
-    browser = webdriver.Chrome(service=service)
-    try:
-        main(browser)
-    except Exception:
-        ...
-    browser.quit()
-    browser.save_screenshot
+    while True:
+        service = Service(executable_path=ChromeDriverManager().install())
+        browser = webdriver.Chrome(service=service)
+        start_minutes = 0
+        stop_minutes = 10
+        if not utils.start_works():
+            sleep
+        for hour in range(8, 24, const.REFRESH_HOUR_PAUSE):
+            work_time = f'{hour}:{start_minutes}'
+            start_minutes, start_minutes = (
+                utils.random_minutes(start_minutes, stop_minutes)
+            )
+
+            try:
+                refresh_resume(browser)
+            except ElementClickInterceptedException:
+                time_out = utils.find_time_out(browser, const.TIME_OUT_XPATH)
+                print(time_out)
+                browser.quit()
+            sleep(const.REFRESH_SECOND_PAUSE)
+            sleep(start_minutes)

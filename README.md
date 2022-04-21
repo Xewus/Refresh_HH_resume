@@ -1,2 +1,6 @@
 # Refresh_HH_resume
-Auto-refreshing my resume on HeadHunter with Selenium
+
+Обновляет резюме на сайте: https://hh.ru
+
+- Python 3,10
+- Selenium 4.1
