@@ -1,9 +1,9 @@
-from time import sleep
 import datetime as dt
-from random import randint
 import re
-import constants as const
+from random import randint
+from time import sleep
 
+import constants as const
 
 PAUSE = randint(1, 4)
 
@@ -39,6 +39,20 @@ def start_works():
     if difference <= 0:
         return
     sleep(difference * 60 * 60)
+
+
+def wait(minutes=0):
+    """Останавливает выполнение скрипта.
+
+    Программа остановливается на установленное количество
+    часов и случайное количество минут.
+
+    Args:
+        minutes (int, optional): Количество минут для задержки.
+                                 Defaults to 0.
+    """
+    sleep(const.REFRESH_SECOND_PAUSE)
+    sleep(minutes * 60)
 
 
 def get_page(browser, url):

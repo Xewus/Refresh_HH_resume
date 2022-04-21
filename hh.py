@@ -10,13 +10,17 @@ from webdriver_manager.chrome import ChromeDriverManager
 import constants as const
 import utils
 
-
 PHONE = config('PHONE', default='')
 PASSWORD = config('PASSWORD', default='')
 RESUME_URL = config('RESUME_URL', default='')
 
 
 def refresh_resume(browser):
+    """Обновляет резюме.
+
+    Args:
+        browser (_type_): _description_
+    """
     # Вход на строницу логина
     utils.get_page(browser, const.HH_LOGIN_URL)
 
@@ -65,8 +69,7 @@ if __name__ == '__main__':
         finally:
             browser.quit()
 
-        sleep(const.REFRESH_SECOND_PAUSE)
-        sleep(start_minutes)
+        utils.wait(start_minutes)
         start_minutes, stop_minutes = utils.random_minutes(
             start_minutes, stop_minutes
         )
