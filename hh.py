@@ -48,14 +48,19 @@ def refresh_resume(browser):
 
 if __name__ == '__main__':
     start_minutes, stop_minutes = utils.random_minutes()
+    errors_tries = const.ERROR_TRIES
 
-    while True:
+    while errors_tries:
         utils.start_works()
         service = Service(executable_path=ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service)
         try:
             refresh_resume(browser)
+            print('Refresh completed')
         except ElementClickInterceptedException:
+            errors_tries -= 1
+            browser.quit()
+            print('errs=', errors_tries)
             sleep(60 * 30)
         finally:
             browser.quit()
@@ -65,3 +70,4 @@ if __name__ == '__main__':
         start_minutes, stop_minutes = utils.random_minutes(
             start_minutes, stop_minutes
         )
+    print('Допущено 3 ошибки')

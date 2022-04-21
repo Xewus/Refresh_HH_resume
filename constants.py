@@ -14,3 +14,4 @@ RE_TIME_OUT_MINUTE = r'(Обновить можно через) (\b\d{0,2} ми�
 REFRESH_HOUR_PAUSE = 4
 REFRESH_SECOND_PAUSE = 60 * 60 * REFRESH_HOUR_PAUSE
 START_WORKS = 8  # 8 hours AM
+ERROR_TRIES = 3
