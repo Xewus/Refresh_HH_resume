@@ -8,6 +8,38 @@ import constants as const
 PAUSE = randint(1, 4)
 
 
+def random_minutes(start=0, stop=10):
+    """Устанавливает случайные значения, для возможной
+     проверки на повторяемость периодов обновление.
+
+    Args:
+        start (int, optional): Начальное значение.
+                               Defaults to 0.
+        stop (int, optional): Граничное значение.
+                              Defaults to 10.
+
+    Returns:
+        tuple(int, int): Кортеж из случайных чисел от 0 до 59.
+    """
+    start = randint(start, stop)
+    if start > 59:
+        start = 0
+    stop = randint(start, 10)
+    return start, stop
+
+
+def start_works():
+    """Вычисляет время для старта скрипта.
+
+    Returns:
+        bool: Разрешено или нет стартовать.
+    """
+    difference = const.START_WORKS - dt.datetime.now().hour
+    if difference <= 0:
+        return
+    sleep(difference * 60 * 60)
+
+
 def get_page(browser, url):
     """Переходит на страницу с указанным url.
 
@@ -77,36 +109,3 @@ def find_time_out(browser, xpath):
         if time_out[0].isdecimal():
             return time_out.split()[0]
     return 0
-
-
-def start_works():
-    """Вычисляет время для старта скрипта.
-
-    Returns:
-        bool: Разрешено или нет стартовать.
-    """
-    return const.START_WORKS < dt.datetime.now().hour
-
-
-def random_minutes(start=0, stop=10):
-    """Устанавливает случайные значения, для возможной
-     проверки на повторяемость периодов обновление.
-
-    Args:
-        start (int, optional): Начальное значение.
-                               Defaults to 0.
-        stop (int, optional): Граничное значение.
-                              Defaults to 10.
-
-    Returns:
-        tuple(int, int): Кортеж из случайных чисел от 0 до 59.
-    """
-    start = randint(start, stop)
-    if start > 59:
-        start = 0
-    stop = randint(start, 10)
-    return start, stop
-
-
-def pause_to_start():
-    ...
