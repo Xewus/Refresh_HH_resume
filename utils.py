@@ -2,15 +2,30 @@ import datetime as dt
 import re
 from random import randint
 from time import sleep
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import constants as const
 
 PAUSE = randint(1, 4)
 
 
-def random_minutes(start=0, stop=10):
-    """Устанавливает случайные значения, для возможной
-     проверки на повторяемость периодов обновления.
+def dt_now() -> str:
+    """Вычисляет текущее время.
+
+    Returns:
+        str: Дата и время в установленном формате.
+    """
+    return dt.datetime.now().strftime(const.DT_FORMAT)
+
+
+def random_minutes(start=0, stop=10) -> tuple:
+    """Возвращает кортеж из случайных значений.
+    
+    Устанавливает случайные значения минут, для возможной
+    проверки на повторяемость периодов обновления.
 
     Args:
         start (int, optional): Начальное значение.
@@ -28,7 +43,7 @@ def random_minutes(start=0, stop=10):
     return start, stop
 
 
-def start_works():
+def start_works() -> None:
     """Вычисляет время для старта скрипта.
 
     В случае, если текущее время (в часах) больше 0,
@@ -41,7 +56,7 @@ def start_works():
     sleep(difference * 60 * 60)
 
 
-def wait(minutes=0):
+def wait(minutes=0) -> None:
     """Останавливает выполнение скрипта.
 
     Программа остановливается на установленное количество
@@ -55,7 +70,7 @@ def wait(minutes=0):
     sleep(minutes * 60)
 
 
-def get_page(browser, url):
+def get_page(browser, url) -> None:
     """Переходит на страницу с указанным url.
 
     Args:
@@ -66,22 +81,20 @@ def get_page(browser, url):
     sleep(PAUSE)
 
 
-def find_element(browser, xpath):
-    """Находит элемент html-документа по xpath.
-
-    Args:
-        browser (_type_): _description_
-        xpath (str): _description_
-
-    Returns:
-        _type_: Найденный элемент.
-        None: Если элемент не найден.
-    """
-    element = browser.find_element('xpath', xpath)
-    return element
+def find_element(browser, xpath) -> WebElement:
+    try:
+        element = WebDriverWait(browser, 9, 1).until(
+            EC.presence_of_element_located(('xpath', xpath))
+        )
+    except TimeoutException:
+        browser.quit()
+        print(f'Не найден элемент: {xpath}')
+        raise
+    else:
+        return element
 
 
-def input_key(browser, xpath, key):
+def input_key(browser, xpath, key) -> None:
     """Вводит переданное значение.
 
     Args:
@@ -93,7 +106,7 @@ def input_key(browser, xpath, key):
     sleep(PAUSE)
 
 
-def click_button(browser, xpath):
+def click_button(browser, xpath) -> None:
     """Нажимает кнопку.
 
     Args:
@@ -104,7 +117,7 @@ def click_button(browser, xpath):
     sleep(PAUSE)
 
 
-def find_time_out(browser, xpath):
+def find_time_out(browser, xpath) -> int:
     """Находит оставшееся время до следующего обновления.
 
     Args:

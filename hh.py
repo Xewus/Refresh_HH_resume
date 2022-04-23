@@ -1,4 +1,3 @@
-import datetime as dt
 from time import sleep
 
 from decouple import config
@@ -13,7 +12,6 @@ import utils
 PHONE = config('PHONE', default='')
 PASSWORD = config('PASSWORD', default='')
 RESUME_URL = config('RESUME_URL', default='')
-
 
 def refresh_resume(browser):
     """Обновляет резюме.
@@ -43,10 +41,8 @@ def refresh_resume(browser):
     utils.click_button(browser, const.REFRESH_BUTTON_XPATH)
 
     browser.save_screenshot(
-        '/Screenshots/resume_'
-        f'{dt.datetime.now().strftime(const.DT_FORMAT)}.png'
+        f'Screenshots/resume_{utils.dt_now()}.png'
     )
-
     browser.close()
 
 
@@ -58,14 +54,19 @@ if __name__ == '__main__':
         utils.start_works()
         service = Service(executable_path=ChromeDriverManager().install())
         browser = webdriver.Chrome(service=service)
+
         try:
             refresh_resume(browser)
+            print(f'{utils.dt_now()}')
             print('Refresh completed')
-        except ElementClickInterceptedException:
+        except ElementClickInterceptedException as error_click:
             errors_tries -= 1
             browser.quit()
-            print('errs=', errors_tries)
+            print(f'{utils.dt_now()}')
+            print('errs =', errors_tries)
+            print(error_click.msg)
             sleep(60 * 30)
+            continue
         finally:
             browser.quit()
 
@@ -73,4 +74,5 @@ if __name__ == '__main__':
         start_minutes, stop_minutes = utils.random_minutes(
             start_minutes, stop_minutes
         )
-    print('Допущено 3 ошибки')
+        browser.save_screenshot
+    print(f'Допущено {const.ERROR_TRIES} ошибок')
