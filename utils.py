@@ -22,8 +22,8 @@ def dt_now() -> str:
 
 
 def random_minutes(start=0, stop=10) -> tuple:
-    """Возвращает кортеж из случайных значений.
-    
+    """Возвращает кортеж из случайных значений от 0 до 59.
+
     Устанавливает случайные значения минут, для возможной
     проверки на повторяемость периодов обновления.
 
@@ -39,7 +39,7 @@ def random_minutes(start=0, stop=10) -> tuple:
     start = randint(start, stop)
     if start > 59:
         start = 0
-    stop = randint(start, 10)
+    stop = randint(start, start + 10)
     return start, stop
 
 

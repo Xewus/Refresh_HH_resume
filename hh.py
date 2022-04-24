@@ -1,4 +1,5 @@
 from time import sleep
+from pathlib import Path
 
 from decouple import config
 from selenium import webdriver
@@ -13,6 +14,11 @@ PHONE = config('PHONE', default='')
 PASSWORD = config('PASSWORD', default='')
 RESUME_URL = config('RESUME_URL', default='')
 
+BASE_DIR = Path.cwd()
+SCREENS_DIR = BASE_DIR / 'Screenshots'
+SCREENS_DIR.mkdir(exist_ok=True)
+
+
 def refresh_resume(browser):
     """Обновляет резюме.
 
@@ -21,7 +27,6 @@ def refresh_resume(browser):
     """
     # Вход на строницу логина
     utils.get_page(browser, const.HH_LOGIN_URL)
-
     # Ввод номера телефона или почты
     utils.input_key(browser, const.PHONE_INPUT_XPATH, PHONE)
 
@@ -41,9 +46,10 @@ def refresh_resume(browser):
     utils.click_button(browser, const.REFRESH_BUTTON_XPATH)
 
     browser.save_screenshot(
-        f'Screenshots/resume_{utils.dt_now()}.png'
-    )
+        f'{SCREENS_DIR}/resume_{utils.dt_now()}.png'
+    )    
     browser.close()
+
 
 
 if __name__ == '__main__':
@@ -57,15 +63,13 @@ if __name__ == '__main__':
 
         try:
             refresh_resume(browser)
-            print(f'{utils.dt_now()}')
-            print('Refresh completed')
+            print(f'{utils.dt_now()}: Refresh completed')
         except ElementClickInterceptedException as error_click:
             errors_tries -= 1
             browser.quit()
-            print(f'{utils.dt_now()}')
-            print('errs =', errors_tries)
+            print(f'{utils.dt_now()}: errs = {errors_tries}')
             print(error_click.msg)
-            sleep(60 * 30)
+            sleep(30*60)
             continue
         finally:
             browser.quit()
@@ -74,5 +78,4 @@ if __name__ == '__main__':
         start_minutes, stop_minutes = utils.random_minutes(
             start_minutes, stop_minutes
         )
-        browser.save_screenshot
     print(f'Допущено {const.ERROR_TRIES} ошибок')
