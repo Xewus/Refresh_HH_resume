@@ -5,6 +5,7 @@ from decouple import config
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 import constants as const
@@ -59,7 +60,9 @@ if __name__ == '__main__':
     while errors_tries:
         utils.start_works()
         service = Service(executable_path=ChromeDriverManager().install())
-        browser = webdriver.Chrome(service=service)
+        options = Options()
+        options.add_argument('--headless')
+        browser = webdriver.Chrome(service=service, options=options)
 
         try:
             refresh_resume(browser)
